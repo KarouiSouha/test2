@@ -2,7 +2,8 @@
 spring:
   application:
     name: doctor-activation-service
-  
+notification:
+  admin-email: admin@healthapp.com
   # MongoDB
   data:
     mongodb:
