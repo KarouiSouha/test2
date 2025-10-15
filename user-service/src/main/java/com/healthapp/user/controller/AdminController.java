@@ -50,15 +50,15 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.success("User retrieved successfully", user));
     }
     
-    @PutMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
-            @PathVariable String userId,
-            @Valid @RequestBody UpdateUserRequest request) {
+    // @PutMapping("/{userId}")
+    // public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+    //         @PathVariable String userId,
+    //         @Valid @RequestBody UpdateUserRequest request) {
         
-        log.info("Admin updating user: {}", userId);
-        UserResponse updatedUser = userService.updateUser(userId, request);
-        return ResponseEntity.ok(ApiResponse.success("User updated successfully", updatedUser));
-    }
+    //     log.info("Admin updating user: {}", userId);
+    //     UserResponse updatedUser = userService.updateUser(userId, request);
+    //     return ResponseEntity.ok(ApiResponse.success("User updated successfully", updatedUser));
+    // }
     
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String userId) {

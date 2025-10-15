@@ -18,7 +18,7 @@ public class UserServiceApplication {
             
             ========================================
             👥 User Service démarré!
-            📍 Port: 8083
+            📍 Port: 8085
             📊 MongoDB: health_user_db
             ========================================
             """);

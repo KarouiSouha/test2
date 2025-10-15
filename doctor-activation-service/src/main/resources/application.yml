@@ -2,9 +2,10 @@
 spring:
   application:
     name: doctor-activation-service
-    
+    # ✅ EMAIL DE L'ADMIN QUI RECEVRA LES NOTIFICATIONS
 notification:
-  admin-email: admin@gmail.com.com
+  admin-email: ${ADMIN_EMAIL:admin@healthapp.com}  # ⚠️ Remplacer par un vrai email
+
   # MongoDB
   data:
     mongodb:

@@ -9,13 +9,12 @@ spring:
       host: ${MONGO_HOST:localhost}
       port: ${MONGO_PORT:27017}
       database: ${MONGO_DB:health_notification_db}
-  
-  # Configuration Email (Gmail exemple)
+  # ✅ CONFIGURATION GMAIL POUR VRAIS EMAILS
   mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-app-password}
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:votre-email@gmail.com}  # ⚠️ REMPLACER
+    password: ${MAIL_PASSWORD:votre-app-password}     # ⚠️ REMPLACER (App Password)
     properties:
       mail:
         smtp:
@@ -23,7 +22,24 @@ spring:
           starttls:
             enable: true
             required: true
-        debug: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+        debug: true  # ✅ Active les logs détaillés
+  # # Configuration Email (Gmail exemple)
+  # mail:
+  #   host: ${MAIL_HOST:smtp.gmail.com}
+  #   port: ${MAIL_PORT:587}
+  #   username: ${MAIL_USERNAME:your-email@gmail.com}
+  #   password: ${MAIL_PASSWORD:your-app-password}
+  #   properties:
+  #     mail:
+  #       smtp:
+  #         auth: true
+  #         starttls:
+  #           enable: true
+  #           required: true
+  #       debug: false
   
   # Thymeleaf pour les templates
   thymeleaf:

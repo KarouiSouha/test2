@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,19 +95,38 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
-    private Map<String, Object> buildAccessTokenClaims(User user) {
+    // private Map<String, Object> buildAccessTokenClaims(User user) {
+    //     Map<String, Object> claims = new HashMap<>();
+    //     claims.put("user_id", user.getId());
+    //     claims.put("email", user.getEmail());
+    //     claims.put("full_name", user.getFullName());
+    //     claims.put("roles", user.getRoles());
+    //     claims.put("is_activated", user.getIsActivated());
+    //     claims.put("account_status", user.getAccountStatus());
+    //     return claims;
+    // }
+     private Map<String, Object> buildAccessTokenClaims(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("user_id", user.getId());
         claims.put("email", user.getEmail());
         claims.put("full_name", user.getFullName());
-        claims.put("roles", user.getRoles());
+        
+        // Convertir les rôles en liste de strings
+        List<String> roles = user.getRoles().stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        claims.put("roles", roles);
+        
         claims.put("is_activated", user.getIsActivated());
-        claims.put("account_status", user.getAccountStatus());
+        claims.put("account_status", user.getAccountStatus().name());
+        
         return claims;
     }
     
+    // public long getAccessTokenExpiration() {
+    //     return jwtConfig.getExpiration();
+    // }
     public long getAccessTokenExpiration() {
         return jwtConfig.getAccessTokenExpiration();
     }
 }
-

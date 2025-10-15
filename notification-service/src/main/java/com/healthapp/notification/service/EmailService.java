@@ -154,19 +154,31 @@ public class EmailService {
     /**
      * Mapper le type de template au fichier Thymeleaf
      */
+    // private String getTemplateName(EmailTemplateType templateType) {
+    //     return switch (templateType) {
+    //         case DOCTOR_REGISTRATION_ADMIN_NOTIFICATION -> "doctor-registration-admin";
+    //         case DOCTOR_ACTIVATION_CONFIRMATION -> "doctor-activation-confirmation";
+    //         case DOCTOR_ACTIVATION_REJECTION -> "doctor-activation-rejection";
+    //         case USER_WELCOME -> "user-welcome";
+    //         case PASSWORD_RESET -> "password-reset";
+    //         case EMAIL_VERIFICATION -> "email-verification";
+    //         case ACCOUNT_LOCKED -> "account-locked";
+    //         default -> throw new IllegalArgumentException("Unknown template type: " + templateType);
+    //     };
+    // }
     private String getTemplateName(EmailTemplateType templateType) {
-        return switch (templateType) {
-            case DOCTOR_REGISTRATION_ADMIN_NOTIFICATION -> "doctor-registration-admin";
-            case DOCTOR_ACTIVATION_CONFIRMATION -> "doctor-activation-confirmation";
-            case DOCTOR_ACTIVATION_REJECTION -> "doctor-activation-rejection";
-            case USER_WELCOME -> "user-welcome";
-            case PASSWORD_RESET -> "password-reset";
-            case EMAIL_VERIFICATION -> "email-verification";
-            case ACCOUNT_LOCKED -> "account-locked";
-            default -> throw new IllegalArgumentException("Unknown template type: " + templateType);
-        };
-    }
-    
+    return switch (templateType) {
+        case DOCTOR_REGISTRATION_PENDING -> "doctor-registration-pending";  // ✅ AJOUTER
+        case DOCTOR_REGISTRATION_ADMIN_NOTIFICATION -> "doctor-registration-admin";
+        case DOCTOR_ACTIVATION_CONFIRMATION -> "doctor-activation-confirmation";
+        case DOCTOR_ACTIVATION_REJECTION -> "doctor-activation-rejection";
+        case USER_WELCOME -> "user-welcome";
+        case PASSWORD_RESET -> "password-reset";
+        case EMAIL_VERIFICATION -> "email-verification";
+        case ACCOUNT_LOCKED -> "account-locked";
+        default -> throw new IllegalArgumentException("Unknown template type: " + templateType);
+    };
+}
     /**
      * Créer un log de notification
      */

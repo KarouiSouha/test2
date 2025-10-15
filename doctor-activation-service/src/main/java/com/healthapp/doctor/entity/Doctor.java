@@ -8,8 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.healthapp.shared.enums.Gender;
+
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -34,10 +38,12 @@ public class Doctor {
     
     @Indexed(unique = true)
     private String email;
-    
+    private String password;
+
     private String firstName;
     private String lastName;
-    
+    private LocalDate birthDate; // ✅ ajouté ici
+    private String profilePictureUrl;
     // Informations médicales
     @Indexed(unique = true)
     private String medicalLicenseNumber;
@@ -48,6 +54,7 @@ public class Doctor {
     
     // Informations de contact
     private String phoneNumber;
+    private Gender gender; // ✅ AJOUTE CECI
     private String officeAddress;
     private String consultationHours;
     

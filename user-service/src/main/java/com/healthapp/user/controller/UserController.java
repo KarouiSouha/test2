@@ -56,10 +56,10 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Password changed", null));
     }
     
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable String userId) {
-        log.info("Getting user: {}", userId);
-        UserResponse user = userService.getUserById(userId);
-        return ResponseEntity.ok(ApiResponse.success(user));
-    }
+    // @GetMapping("/{userId}")
+    // public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable String userId) {
+    //     log.info("Getting user: {}", userId);
+    //     UserResponse user = userService.getUserById(userId);
+    //     return ResponseEntity.ok(ApiResponse.success(user));
+    // }
 }

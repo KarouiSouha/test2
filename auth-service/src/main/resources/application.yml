@@ -28,7 +28,7 @@ eureka:
 # JWT Configuration
 app:
   jwt:
-    secret: ${JWT_SECRET:21f4e176cd2f4b991bd27fd94a7acfa923a032015252f7f725cee7761503b6120d0f92dcda38390c619190e921833477ea8f32100e9d59bcd398073b1552c15e}
+    secret: 21f4e176cd2f4b991bd27fd94a7acfa923a032015252f7f725cee7761503b6120d0f92dcda38390c619190e921833477ea8f32100e9d59bcd398073b1552c15e
     expiration: 900000  # 15 minutes
     refresh-token:
       expiration: 604800000  # 7 jours
