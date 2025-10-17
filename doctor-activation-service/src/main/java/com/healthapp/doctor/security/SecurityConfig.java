@@ -19,18 +19,19 @@ public class SecurityConfig {
     
     private final JwtTokenValidator jwtTokenValidator;
     
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/doctors/register","/api/doctors/login", "/api/doctors/health", "/actuator/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtTokenValidator, UsernamePasswordAuthenticationFilter.class);
-        
-        return http.build();
-    }
+   @Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/doctors/register","/api/doctors/login", "/api/doctors/health", "/actuator/**").permitAll()
+            .requestMatchers("/api/admin/**").hasRole("ADMIN") // Add this
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtTokenValidator, UsernamePasswordAuthenticationFilter.class);
+    
+    return http.build();
+}
 }

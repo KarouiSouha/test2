@@ -1,6 +1,7 @@
 package com.healthapp.doctor.security;
 
 import com.healthapp.shared.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,19 +32,65 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                                     HttpServletResponse response, 
                                     FilterChain filterChain) throws ServletException, IOException {
         
-        // L'API Gateway a déjà validé le token et ajouté les headers
+        // First, check for API Gateway headers
         String userId = request.getHeader("X-User-Id");
         String userEmail = request.getHeader("X-User-Email");
         String rolesHeader = request.getHeader("X-User-Roles");
         
         if (userId != null && userEmail != null) {
+            // Request came through API Gateway
             List<SimpleGrantedAuthority> authorities = parseRoles(rolesHeader);
             
             UsernamePasswordAuthenticationToken authentication = 
                 new UsernamePasswordAuthenticationToken(userId, null, authorities);
             
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("User {} authenticated with roles: {}", userEmail, rolesHeader);
+            log.debug("User {} authenticated via Gateway with roles: {}", userEmail, rolesHeader);
+        } else {
+            // Direct request - validate JWT token
+            String authHeader = request.getHeader("Authorization");
+            
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                try {
+                    String token = authHeader.substring(7);
+                    
+                    // Validate token using JwtUtil
+                    if (JwtUtil.validateToken(token, jwtSecret)) {
+                        Claims claims = JwtUtil.extractAllClaims(token, jwtSecret);
+                        
+                        String email = claims.getSubject();
+                        String userIdFromToken = claims.get("user_id", String.class);
+                        @SuppressWarnings("unchecked")
+                        List<String> roles = claims.get("roles", List.class);
+                        
+                        log.info("Token validated for user: {}, roles: {}", email, roles);
+                        
+                        // Convert roles to authorities with ROLE_ prefix
+                        List<SimpleGrantedAuthority> authorities = roles.stream()
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            .collect(Collectors.toList());
+                        
+                        UsernamePasswordAuthenticationToken authentication = 
+                            new UsernamePasswordAuthenticationToken(userIdFromToken, null, authorities);
+                        
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        log.info("User {} authenticated directly with authorities: {}", email, authorities);
+                    } else {
+                        log.error("JWT validation failed: Invalid or expired token");
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
+                        return;
+                    }
+                    
+                } catch (Exception e) {
+                    log.error("JWT validation failed with exception: {}", e.getMessage(), e);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"Invalid or expired token: " + e.getMessage() + "\"}");
+                    return;
+                }
+            }
         }
         
         filterChain.doFilter(request, response);
@@ -54,11 +101,15 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             return List.of();
         }
         
-        // Parse roles from header (format: "[ROLE_USER, ROLE_DOCTOR]")
         return List.of(rolesHeader.replace("[", "").replace("]", "").split(","))
                 .stream()
                 .map(String::trim)
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> {
+                    if (!role.startsWith("ROLE_")) {
+                        return new SimpleGrantedAuthority("ROLE_" + role);
+                    }
+                    return new SimpleGrantedAuthority(role);
+                })
                 .collect(Collectors.toList());
     }
 }
